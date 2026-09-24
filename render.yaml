@@ -30,9 +30,7 @@ services:
       - key: ADMIN_TOKEN
         generateValue: true # copy into the web app's NEXT_PUBLIC_ADMIN_TOKEN
       - key: PAYSTACK_SECRET_KEY
-        sync: false # live sk_... from the Paystack dashboard (merchant KYB)
-      - key: PAYSTACK_WEBHOOK_SECRET
-        sync: false
+        sync: false # live sk_... from the Paystack dashboard (merchant KYB). Also signs webhooks.
       - key: FLUTTERWAVE_SECRET_KEY
         sync: false # live FLWSECK_... (failover collector)
       - key: FLUTTERWAVE_WEBHOOK_SECRET

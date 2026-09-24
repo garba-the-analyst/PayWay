@@ -4,7 +4,7 @@
 1. Render → **New → Blueprint** → select this repo (`render.yaml` is at the root).
 2. Approve the plan: `payway-api` (Docker, starter) + `payway-db` (Postgres) + `payway-redis` (Key Value).
 3. After sync, open `payway-api` → **Environment** and set the secrets (all `sync: false`):
-   - `PAYSTACK_SECRET_KEY`, `PAYSTACK_WEBHOOK_SECRET` (merchant KYB first)
+   - `PAYSTACK_SECRET_KEY` (merchant KYB first; also verifies webhooks — no separate secret exists)
    - `FLUTTERWAVE_SECRET_KEY`, `FLUTTERWAVE_WEBHOOK_SECRET` (failover)
    - `SETTLEMENT_WALLET_USDT` — our USDT receiving wallet
    - `ADMIN_TOKEN` is auto-generated — **copy it** for step 2.

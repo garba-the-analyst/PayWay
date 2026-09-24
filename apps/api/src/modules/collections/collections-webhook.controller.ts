@@ -21,7 +21,9 @@ export class CollectionsWebhookController {
   @HttpCode(200)
   async paystack(@Req() req: Request, @Headers('x-paystack-signature') sig: string) {
     const raw = (req as any).rawBody as Buffer;
-    if (!verifyPaystackSignature(raw, process.env.PAYSTACK_WEBHOOK_SECRET ?? '', sig)) {
+    // Paystack signs with the SECRET key (no separate webhook secret exists).
+    const secret = process.env.PAYSTACK_WEBHOOK_SECRET || process.env.PAYSTACK_SECRET_KEY || '';
+    if (!verifyPaystackSignature(raw, secret, sig)) {
       throw new UnauthorizedException('invalid paystack signature');
     }
     return this.handle('paystack', JSON.parse(raw.toString()));
