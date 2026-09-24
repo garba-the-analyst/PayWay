@@ -10,6 +10,7 @@ import { CollectionsWebhookController } from './modules/collections/collections-
 import { PaystackProvider } from './modules/collections/paystack.provider';
 import { RateService } from './modules/collections/rate.service';
 import { HealthController } from './modules/health/health.controller';
+import { OpsController } from './modules/ops/ops.controller';
 import { ReconcilerService } from './modules/reconciler/reconciler.service';
 import { IdempotencyStore } from './shared/idempotency.store';
 import { PrismaService } from './shared/prisma.service';
@@ -20,7 +21,7 @@ import { PrismaService } from './shared/prisma.service';
     ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
   ],
-  controllers: [HealthController, CollectionsController, CollectionsWebhookController],
+  controllers: [HealthController, CollectionsController, CollectionsWebhookController, OpsController],
   providers: [
     PrismaService,
     IdempotencyStore,
