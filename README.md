@@ -4,7 +4,7 @@ Clients pay with any global card. No accounts, no verification. Fiat is captured
 via our merchant collectors, converted at a locked USDT rate, and settled to our
 wallet. Paystack collects the cards. USD in, USDT out.
 
-> **Hosting (free):** API + web on Vercel, Postgres on Neon — see [DEPLOY.md](./DEPLOY.md).
+> **Hosting:** everything on Render via `render.yaml` — see [DEPLOY.md](./DEPLOY.md).
 
 ## Quickstart
 

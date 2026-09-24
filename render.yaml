@@ -41,19 +41,22 @@ services:
     maxmemoryPolicy: noeviction
     ipAllowList: [] # no public access; API reaches it over the private network
 
-  # --- Optional: host the web app on Render instead of Vercel ---
-  # Uncomment to deploy apps/web here (Vercel remains recommended for it).
-  # - type: web
-  #   name: payway-web
-  #   runtime: docker
-  #   dockerfilePath: ./apps/web/Dockerfile
-  #   plan: starter
-  #   healthCheckPath: /
-  #   dockerBuildArgs:
-  #     NEXT_PUBLIC_PAYWAY_API: https://payway-api.onrender.com
-  #     NEXT_PUBLIC_MERCHANT_ID: demo_merchant
-  #     # NEXT_PUBLIC_ADMIN_SLUG: <same slug as Vercel>
-  #     # NEXT_PUBLIC_ADMIN_TOKEN: <same ADMIN_TOKEN as the API>
+  # --- Web app (Next.js): deploy AFTER the API once, with the values below ---
+  # Next.js bakes NEXT_PUBLIC_* at build time, so this service is deployed in
+  # two steps: 1) deploy the Blueprint, 2) fill these build args in the
+  # dashboard (API URL + generated ADMIN_TOKEN) and redeploy just this service.
+  - type: web
+    name: payway-web
+    runtime: docker
+    dockerfilePath: ./apps/web/Dockerfile
+    plan: starter
+    healthCheckPath: /
+    dockerBuildArgs:
+      NEXT_PUBLIC_PAYWAY_API: https://payway-api.onrender.com # <-- set to your API URL, redeploy
+      NEXT_PUBLIC_MERCHANT_ID: demo_merchant
+      NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: pk_live_xxx # <-- your live pk_...
+      # NEXT_PUBLIC_ADMIN_SLUG: <your slug>
+      # NEXT_PUBLIC_ADMIN_TOKEN: <paste the API's generated ADMIN_TOKEN, redeploy>
 
 databases:
   - name: payway-db
