@@ -1,0 +1,67 @@
+# Render Blueprint — one-click deploy of the PayWay backend.
+# Usage: Render dashboard → New → Blueprint → select this repo. Then set the
+# `sync: false` secrets below (MoonPay + Transak keys) and deploy.
+# The frontend (apps/web) deploys separately on Vercel — see DEPLOY.md.
+
+services:
+  # --- PayWay API (NestJS): always-on web service ---
+  - type: web
+    name: payway-api
+    runtime: docker
+    dockerfilePath: ./apps/api/Dockerfile
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DEFAULT_CURRENCY
+        value: USD
+      - key: RUN_MIGRATIONS
+        value: true # applies apps/api/prisma/migrations on boot
+      - key: DATABASE_URL
+        fromDatabase:
+          name: payway-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: payway-redis
+          property: connectionString
+      - key: ADMIN_TOKEN
+        generateValue: true # copy into the web app's NEXT_PUBLIC_ADMIN_TOKEN
+      - key: PAYSTACK_SECRET_KEY
+        sync: false # live sk_... from the Paystack dashboard (merchant KYB)
+      - key: PAYSTACK_WEBHOOK_SECRET
+        sync: false
+      - key: FLUTTERWAVE_SECRET_KEY
+        sync: false # live FLWSECK_... (failover collector)
+      - key: FLUTTERWAVE_WEBHOOK_SECRET
+        sync: false
+      - key: SETTLEMENT_WALLET_USDT
+        sync: false # our USDT receiving wallet (TRON)
+
+  # --- Redis (BullMQ queues, idempotency fast-path) ---
+  - type: keyvalue
+    name: payway-redis
+    plan: starter
+    maxmemoryPolicy: noeviction
+
+  # --- Optional: host the web app on Render instead of Vercel ---
+  # Uncomment to deploy apps/web here (Vercel remains recommended for it).
+  # - type: web
+  #   name: payway-web
+  #   runtime: docker
+  #   dockerfilePath: ./apps/web/Dockerfile
+  #   plan: starter
+  #   healthCheckPath: /
+  #   dockerBuildArgs:
+  #     NEXT_PUBLIC_PAYWAY_API: https://payway-api.onrender.com
+  #     NEXT_PUBLIC_MERCHANT_ID: demo_merchant
+  #     # NEXT_PUBLIC_ADMIN_SLUG: <same slug as Vercel>
+  #     # NEXT_PUBLIC_ADMIN_TOKEN: <same ADMIN_TOKEN as the API>
+
+databases:
+  - name: payway-db
+    databaseName: payway
+    user: payway
+    plan: starter

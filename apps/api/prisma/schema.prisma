@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CollectionProvider {
+  paystack
+  flutterwave
+}
+
+enum CollectionStatus {
+  INITIATED
+  FIAT_AUTHORIZED
+  CONVERTING
+  SETTLED_USDT
+  FAILED
+  REFUNDED
+}
+
+model CollectionOrder {
+  id                String             @id @default(uuid())
+  merchantId        String             @map("merchant_id")
+  orderId           String             @map("order_id")
+  provider          CollectionProvider @default(paystack)
+  providerReference String?            @unique @map("provider_reference")
+  authUrl           String?            @map("auth_url")
+  idempotencyKey    String             @map("idempotency_key")
+  fiatAmountMinor   Int                @map("fiat_amount_minor")
+  fiatCurrency      String             @default("USD") @map("fiat_currency")
+  email             String?
+  status            CollectionStatus   @default(INITIATED)
+  quotedUsdt        String?            @map("quoted_usdt")
+  rateLockedAt      DateTime?          @map("rate_locked_at")
+  executedUsdt      String?            @map("executed_usdt")
+  txHash            String?            @map("tx_hash")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+
+  events CollectionEvent[]
+
+  @@unique([merchantId, idempotencyKey])
+  @@index([status, createdAt])
+  @@map("collection_orders")
+}
+
+model CollectionEvent {
+  id              String             @id @default(uuid())
+  orderId         String?            @map("order_id")
+  provider        CollectionProvider
+  externalEventId String             @map("external_event_id")
+  type            String
+  raw             Json
+  createdAt       DateTime           @default(now()) @map("created_at")
+
+  order CollectionOrder? @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, externalEventId])
+  @@map("collection_events")
+}
+
+model CollectionIdempotency {
+  key        String
+  merchantId String   @map("merchant_id")
+  method     String
+  path       String
+  respCode   Int      @map("resp_code")
+  respBody   Json     @map("resp_body")
+  expiresAt  DateTime @map("expires_at")
+
+  @@id([merchantId, key])
+  @@map("collection_idempotency")
+}

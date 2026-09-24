@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.cdk/
+*.tsbuildinfo
+.env
+.env.local
+coverage/
+cdk.out/
+node_modules/
+.next/
+dist/
+build/
