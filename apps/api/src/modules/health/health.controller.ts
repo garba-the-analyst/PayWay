@@ -9,6 +9,6 @@ export class HealthController {
 
   @Get('health/ready')
   ready() {
-    return { ready: true, region: 'eu-west-1', providers: ['paystack', 'flutterwave'], mode: 'collections-to-usdt' };
+    return { ready: true, region: 'eu-west-1', providers: ['paystack'], mode: 'collections-to-usdt' };
   }
 }

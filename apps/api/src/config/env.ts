@@ -5,9 +5,7 @@ export const envSchema = z.object({
   REDIS_URL: z.string().default('redis://localhost:6379'),
   PORT: z.coerce.number().default(3000),
   PAYSTACK_SECRET_KEY: z.string().default('sk_test_xxx'),
-  PAYSTACK_WEBHOOK_SECRET: z.string().default('whsec_paystack_xxx'),
-  FLUTTERWAVE_SECRET_KEY: z.string().default('FLWSECK_TEST_xxx'),
-  FLUTTERWAVE_WEBHOOK_SECRET: z.string().default('flw_wh_xxx'),
+  PAYSTACK_WEBHOOK_SECRET: z.string().default(''),
   DEFAULT_CURRENCY: z.string().default('USD'),
   RATE_SOURCE_STUB: z.string().default(''),
   // Our USDT receiving wallet (TRON) — displayed to ops; spending happens in treasury.

@@ -2,7 +2,7 @@
 
 Clients pay with any global card. No accounts, no verification. Fiat is captured
 via our merchant collectors, converted at a locked USDT rate, and settled to our
-wallet. Paystack **primary**, Flutterwave **failover**. USD in, USDT out.
+wallet. Paystack collects the cards. USD in, USDT out.
 
 > **Hosting:** API on Render + web on Vercel — see [DEPLOY.md](./DEPLOY.md) for the one-click setup.
 
@@ -27,7 +27,7 @@ npx prisma migrate dev   # run from apps/api
 - `GET /api/v1/pay/:id` — tracker polling
 - `GET /api/v1/pay` — ops list (admin token)
 - `POST /api/v1/pay/:id/settle {txHash, executedUsdt}` — ops settlement (admin token)
-- `POST /webhooks/paystack`, `POST /webhooks/flutterwave`
+- `POST /webhooks/paystack`
 - `GET /health`, `GET /health/ready`
 
 ## Money flow

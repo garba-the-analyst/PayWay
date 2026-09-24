@@ -20,7 +20,7 @@ export interface CollectionRecord {
   id: string;
   merchantId: string;
   orderId: string;
-  provider: 'paystack' | 'flutterwave';
+  provider: 'paystack';
   providerReference: string;
   authUrl: string;
   fiatAmountMinor: number;
@@ -51,7 +51,7 @@ function toRecord(r: Row): CollectionRecord {
     id: r.id,
     merchantId: r.merchantId,
     orderId: r.orderId,
-    provider: r.provider as 'paystack' | 'flutterwave',
+    provider: r.provider as 'paystack',
     providerReference: r.providerReference ?? '',
     authUrl: r.authUrl ?? '',
     fiatAmountMinor: r.fiatAmountMinor,

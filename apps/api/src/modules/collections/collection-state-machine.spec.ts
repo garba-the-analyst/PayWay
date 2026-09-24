@@ -1,6 +1,5 @@
 import {
   canTransitionCollection,
-  flutterwaveEventToCollection,
   paystackEventToCollection,
 } from './collection-state-machine';
 
@@ -19,8 +18,5 @@ describe('collection state machine', () => {
     expect(paystackEventToCollection('charge.failed')).toBe('FAILED');
     expect(paystackEventToCollection('refund.processed')).toBe('REFUNDED');
     expect(paystackEventToCollection('transfer.success')).toBeNull();
-    expect(flutterwaveEventToCollection('charge.completed', 'successful')).toBe('FIAT_AUTHORIZED');
-    expect(flutterwaveEventToCollection('charge.completed', 'failed')).toBe('FAILED');
-    expect(flutterwaveEventToCollection('unknown', 'pending')).toBeNull();
   });
 });

@@ -2,9 +2,9 @@ import { Controller, Headers, HttpCode, Post, Req, UnauthorizedException } from 
 import type { Request } from 'express';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../shared/prisma.service';
-import { flutterwaveEventToCollection, paystackEventToCollection } from './collection-state-machine';
+import { paystackEventToCollection } from './collection-state-machine';
 import { CollectionsService } from './collections.service';
-import { verifyFlutterwaveSignature, verifyPaystackSignature } from './signature.util';
+import { verifyPaystackSignature } from './signature.util';
 
 /**
  * Card-collector webhooks. Fiat capture → FIAT_AUTHORIZED → rate locked →
@@ -26,32 +26,19 @@ export class CollectionsWebhookController {
     if (!verifyPaystackSignature(raw, secret, sig)) {
       throw new UnauthorizedException('invalid paystack signature');
     }
-    return this.handle('paystack', JSON.parse(raw.toString()));
+    return this.handle(JSON.parse(raw.toString()));
   }
 
-  @Post('flutterwave')
-  @HttpCode(200)
-  async flutterwave(@Req() req: Request, @Headers('ver-hash') verHash: string) {
-    const raw = (req as any).rawBody as Buffer;
-    if (!verifyFlutterwaveSignature(raw, process.env.FLUTTERWAVE_WEBHOOK_SECRET ?? '', verHash)) {
-      throw new UnauthorizedException('invalid flutterwave signature');
-    }
-    return this.handle('flutterwave', JSON.parse(raw.toString()));
-  }
-
-  private async handle(provider: 'paystack' | 'flutterwave', evt: any) {
+  private async handle(evt: any) {
     const type: string = evt?.event ?? evt?.type ?? evt?.eventType ?? 'unknown';
-    const ref: string | undefined = evt?.data?.reference ?? evt?.data?.tx_ref ?? evt?.data?.txRef;
+    const ref: string | undefined = evt?.data?.reference;
     const eventId: string = evt?.data?.id ? String(evt.data.id) : `${type}.${ref ?? 'noref'}`;
     if (!ref) return { received: true, ignored: 'no reference' };
 
-    const next =
-      provider === 'paystack'
-        ? paystackEventToCollection(type)
-        : flutterwaveEventToCollection(type, String(evt?.data?.status ?? ''));
+    const next = paystackEventToCollection(type);
     try {
       await this.db.collectionEvent.create({
-        data: { provider, externalEventId: `${provider}:${eventId}`, type, raw: evt as Prisma.InputJsonValue },
+        data: { provider: 'paystack', externalEventId: `paystack:${eventId}`, type, raw: evt as Prisma.InputJsonValue },
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {

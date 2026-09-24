@@ -27,11 +27,3 @@ export function paystackEventToCollection(type: string): CollectionStatus | null
   if (t.includes('refund')) return 'REFUNDED';
   return null;
 }
-
-/** Flutterwave charge events → lifecycle. */
-export function flutterwaveEventToCollection(type: string, status: string): CollectionStatus | null {
-  const t = `${type}.${status}`.toLowerCase();
-  if (t.includes('successful') || t.includes('success')) return 'FIAT_AUTHORIZED';
-  if (t.includes('failed') || t.includes('cancelled')) return 'FAILED';
-  return null;
-}

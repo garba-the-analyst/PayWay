@@ -7,7 +7,6 @@ import { CollectionsController } from './modules/collections/collections.control
 import { CollectionsRouter } from './modules/collections/collections-router.service';
 import { CollectionsService } from './modules/collections/collections.service';
 import { CollectionsWebhookController } from './modules/collections/collections-webhook.controller';
-import { FlutterwaveProvider } from './modules/collections/flutterwave.provider';
 import { PaystackProvider } from './modules/collections/paystack.provider';
 import { RateService } from './modules/collections/rate.service';
 import { HealthController } from './modules/health/health.controller';
@@ -26,7 +25,6 @@ import { PrismaService } from './shared/prisma.service';
     PrismaService,
     IdempotencyStore,
     PaystackProvider,
-    FlutterwaveProvider,
     CollectionsRouter,
     CollectionsService,
     RateService,

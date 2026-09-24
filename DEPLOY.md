@@ -5,7 +5,6 @@
 2. Approve the plan: `payway-api` (Docker, starter) + `payway-db` (Postgres) + `payway-redis` (Key Value).
 3. After sync, open `payway-api` → **Environment** and set the secrets (all `sync: false`):
    - `PAYSTACK_SECRET_KEY` (merchant KYB first; also verifies webhooks — no separate secret exists)
-   - `FLUTTERWAVE_SECRET_KEY`, `FLUTTERWAVE_WEBHOOK_SECRET` (failover)
    - `SETTLEMENT_WALLET_USDT` — our USDT receiving wallet
    - `ADMIN_TOKEN` is auto-generated — **copy it** for step 2.
 4. Deploy. Health check is `GET /health`. The Docker image runs `prisma migrate deploy`
@@ -22,8 +21,8 @@
 
 ## 3. Go live
 1. Point DNS: web domain → Vercel, `api.<domain>` → Render (Render dashboard → Custom Domain).
-2. In the Paystack/Flutterwave dashboards, set the webhook URL to
-   `https://<api-domain>/webhooks/paystack` (and `/webhooks/flutterwave`).
+2. In the Paystack dashboard, set the webhook URL to
+   `https://<api-domain>/webhooks/paystack`.
 3. Run a **$1 live test** with a real card: pay → `FIAT_AUTHORIZED` → rate locks
    (`CONVERTING`) → treasury converts → ops settles with the USDT tx hash → `SETTLED_USDT`.
 

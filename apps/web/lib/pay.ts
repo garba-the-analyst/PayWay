@@ -5,7 +5,7 @@ export type CollectionOrder = {
   id: string;
   merchantId: string;
   orderId: string;
-  provider: 'paystack' | 'flutterwave';
+  provider: 'paystack';
   providerReference: string;
   authUrl: string;
   fiatAmountMinor: number;

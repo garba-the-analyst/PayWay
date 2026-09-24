@@ -9,13 +9,13 @@ export interface InitParams {
 }
 
 export interface InitResult {
-  provider: 'paystack' | 'flutterwave';
+  provider: 'paystack';
   providerReference: string;
   authUrl: string;
 }
 
 export interface CollectionProvider {
-  readonly name: 'paystack' | 'flutterwave';
+  readonly name: 'paystack';
   initialize(p: InitParams): Promise<InitResult>;
   verify(reference: string): Promise<{ status: 'SUCCEEDED' | 'FAILED' | 'PROCESSING' }>;
 }

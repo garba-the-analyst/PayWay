@@ -31,10 +31,6 @@ services:
         generateValue: true # copy into the web app's NEXT_PUBLIC_ADMIN_TOKEN
       - key: PAYSTACK_SECRET_KEY
         sync: false # live sk_... from the Paystack dashboard (merchant KYB). Also signs webhooks.
-      - key: FLUTTERWAVE_SECRET_KEY
-        sync: false # live FLWSECK_... (failover collector)
-      - key: FLUTTERWAVE_WEBHOOK_SECRET
-        sync: false
       - key: SETTLEMENT_WALLET_USDT
         sync: false # our USDT receiving wallet (TRON)
 
@@ -43,6 +39,7 @@ services:
     name: payway-redis
     plan: starter
     maxmemoryPolicy: noeviction
+    ipAllowList: [] # no public access; API reaches it over the private network
 
   # --- Optional: host the web app on Render instead of Vercel ---
   # Uncomment to deploy apps/web here (Vercel remains recommended for it).
